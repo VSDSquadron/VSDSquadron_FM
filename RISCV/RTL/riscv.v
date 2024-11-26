@@ -369,9 +369,9 @@ module SOC (
    wire uart_ready;
    
    corescore_emitter_uart #(
-      .clk_freq_hz(10000000),
-//      .baud_rate(115200)
-        .baud_rate(1000000)
+      .clk_freq_hz(`CPU_FREQ*1000000),
+     .baud_rate(115200)
+      //   .baud_rate(1000000)
    ) UART(
       .i_clk(clk),
       .i_rst(!resetn),
@@ -407,4 +407,3 @@ module SOC (
    );
 
 endmodule
-
