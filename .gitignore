@@ -1,5 +1,5 @@
-**/*.blif 
-**/*.asc 
-**/*.bin 
-**/*.json
-**/*.timings
+# **/*.blif 
+# **/*.asc 
+# **/*.bin 
+# **/*.json
+# **/*.timings

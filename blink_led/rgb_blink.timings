@@ -1,0 +1,103 @@
+
+icetime topological timing analysis report
+==========================================
+
+Report for critical path:
+-------------------------
+
+        lc40_1_27_0 (LogicCell40) [clk] -> lcout: 1.491 ns
+     1.491 ns net_5614 (frequency_counter_i[0])
+        t24 (LocalMux) I -> O: 1.099 ns
+        inmux_2_27_14517_14543 (InMux) I -> O: 0.662 ns
+        lc40_2_27_0 (LogicCell40) in1 -> carryout: 0.675 ns
+     3.928 ns t2
+        lc40_2_27_1 (LogicCell40) carryin -> carryout: 0.278 ns
+     4.206 ns net_14547 (frequency_counter_i_SB_CARRY_CI_CO)
+        lc40_2_27_2 (LogicCell40) carryin -> carryout: 0.278 ns
+     4.484 ns net_14553 (frequency_counter_i_SB_CARRY_I1_7_CO)
+        lc40_2_27_3 (LogicCell40) carryin -> carryout: 0.278 ns
+     4.762 ns net_14559 (frequency_counter_i_SB_CARRY_I1_6_CO)
+        lc40_2_27_4 (LogicCell40) carryin -> carryout: 0.278 ns
+     5.040 ns net_14565 (frequency_counter_i_SB_CARRY_I1_5_CO)
+        lc40_2_27_5 (LogicCell40) carryin -> carryout: 0.278 ns
+     5.318 ns net_14571 (frequency_counter_i_SB_CARRY_I1_4_CO)
+        lc40_2_27_6 (LogicCell40) carryin -> carryout: 0.278 ns
+     5.596 ns net_14577 (frequency_counter_i_SB_CARRY_I1_3_CO)
+        lc40_2_27_7 (LogicCell40) carryin -> carryout: 0.278 ns
+     5.875 ns net_14583 (frequency_counter_i_SB_CARRY_I1_2_CO)
+        t3 (ICE_CARRY_IN_MUX) carryinitin -> carryinitout: 0.556 ns
+        lc40_2_28_0 (LogicCell40) carryin -> carryout: 0.278 ns
+     6.709 ns net_14664 (frequency_counter_i_SB_CARRY_I1_1_CO)
+        lc40_2_28_1 (LogicCell40) carryin -> carryout: 0.278 ns
+     6.987 ns net_14670 (frequency_counter_i_SB_CARRY_I1_CO)
+        lc40_2_28_2 (LogicCell40) carryin -> carryout: 0.278 ns
+     7.265 ns net_14676 (frequency_counter_i_SB_CARRY_I1_23_CO)
+        lc40_2_28_3 (LogicCell40) carryin -> carryout: 0.278 ns
+     7.543 ns net_14682 (frequency_counter_i_SB_CARRY_I1_22_CO)
+        lc40_2_28_4 (LogicCell40) carryin -> carryout: 0.278 ns
+     7.822 ns net_14688 (frequency_counter_i_SB_CARRY_I1_21_CO)
+        lc40_2_28_5 (LogicCell40) carryin -> carryout: 0.278 ns
+     8.100 ns net_14694 (frequency_counter_i_SB_CARRY_I1_20_CO)
+        lc40_2_28_6 (LogicCell40) carryin -> carryout: 0.278 ns
+     8.378 ns net_14700 (frequency_counter_i_SB_CARRY_I1_19_CO)
+        lc40_2_28_7 (LogicCell40) carryin -> carryout: 0.278 ns
+     8.656 ns net_14706 (frequency_counter_i_SB_CARRY_I1_18_CO)
+        t4 (ICE_CARRY_IN_MUX) carryinitin -> carryinitout: 0.556 ns
+        lc40_2_29_0 (LogicCell40) carryin -> carryout: 0.278 ns
+     9.490 ns net_14787 (frequency_counter_i_SB_CARRY_I1_17_CO)
+        lc40_2_29_1 (LogicCell40) carryin -> carryout: 0.278 ns
+     9.768 ns net_14793 (frequency_counter_i_SB_CARRY_I1_16_CO)
+        lc40_2_29_2 (LogicCell40) carryin -> carryout: 0.278 ns
+    10.047 ns net_14799 (frequency_counter_i_SB_CARRY_I1_15_CO)
+        lc40_2_29_3 (LogicCell40) carryin -> carryout: 0.278 ns
+    10.325 ns net_14805 (frequency_counter_i_SB_CARRY_I1_14_CO)
+        lc40_2_29_4 (LogicCell40) carryin -> carryout: 0.278 ns
+    10.603 ns net_14811 (frequency_counter_i_SB_CARRY_I1_13_CO)
+        lc40_2_29_5 (LogicCell40) carryin -> carryout: 0.278 ns
+    10.881 ns net_14817 (frequency_counter_i_SB_CARRY_I1_12_CO)
+        lc40_2_29_6 (LogicCell40) carryin -> carryout: 0.278 ns
+    11.159 ns net_14823 (frequency_counter_i_SB_CARRY_I1_11_CO)
+        lc40_2_29_7 (LogicCell40) carryin -> carryout: 0.278 ns
+    11.437 ns net_14829 (frequency_counter_i_SB_CARRY_I1_10_CO)
+        t5 (ICE_CARRY_IN_MUX) carryinitin -> carryinitout: 0.556 ns
+        lc40_2_30_0 (LogicCell40) carryin -> carryout: 0.278 ns
+    12.272 ns net_14910 (frequency_counter_i_SB_CARRY_I1_9_CO)
+        lc40_2_30_1 (LogicCell40) carryin -> carryout: 0.278 ns
+    12.550 ns net_14916 (frequency_counter_i_SB_CARRY_I1_8_CO)
+        inmux_2_30_14916_14926 (InMux) I -> O: 0.662 ns
+    13.212 ns net_14926 (frequency_counter_i_SB_CARRY_I1_8_CO)
+        lc40_2_30_2 (LogicCell40) in3 [setup]: 0.583 ns
+    13.795 ns net_10979 (color_select[2])
+
+Resolvable net names on path:
+     1.491 ns ..  3.252 ns frequency_counter_i[0]
+     4.206 ns ..  4.206 ns frequency_counter_i_SB_CARRY_CI_CO
+     4.484 ns ..  4.484 ns frequency_counter_i_SB_CARRY_I1_7_CO
+     4.762 ns ..  4.762 ns frequency_counter_i_SB_CARRY_I1_6_CO
+     5.040 ns ..  5.040 ns frequency_counter_i_SB_CARRY_I1_5_CO
+     5.318 ns ..  5.318 ns frequency_counter_i_SB_CARRY_I1_4_CO
+     5.596 ns ..  5.596 ns frequency_counter_i_SB_CARRY_I1_3_CO
+     5.875 ns ..  6.431 ns frequency_counter_i_SB_CARRY_I1_2_CO
+     6.709 ns ..  6.709 ns frequency_counter_i_SB_CARRY_I1_1_CO
+     6.987 ns ..  6.987 ns frequency_counter_i_SB_CARRY_I1_CO
+     7.265 ns ..  7.265 ns frequency_counter_i_SB_CARRY_I1_23_CO
+     7.543 ns ..  7.543 ns frequency_counter_i_SB_CARRY_I1_22_CO
+     7.822 ns ..  7.822 ns frequency_counter_i_SB_CARRY_I1_21_CO
+     8.100 ns ..  8.100 ns frequency_counter_i_SB_CARRY_I1_20_CO
+     8.378 ns ..  8.378 ns frequency_counter_i_SB_CARRY_I1_19_CO
+     8.656 ns ..  9.212 ns frequency_counter_i_SB_CARRY_I1_18_CO
+     9.490 ns ..  9.490 ns frequency_counter_i_SB_CARRY_I1_17_CO
+     9.768 ns ..  9.768 ns frequency_counter_i_SB_CARRY_I1_16_CO
+    10.047 ns .. 10.047 ns frequency_counter_i_SB_CARRY_I1_15_CO
+    10.325 ns .. 10.325 ns frequency_counter_i_SB_CARRY_I1_14_CO
+    10.603 ns .. 10.603 ns frequency_counter_i_SB_CARRY_I1_13_CO
+    10.881 ns .. 10.881 ns frequency_counter_i_SB_CARRY_I1_12_CO
+    11.159 ns .. 11.159 ns frequency_counter_i_SB_CARRY_I1_11_CO
+    11.437 ns .. 11.993 ns frequency_counter_i_SB_CARRY_I1_10_CO
+    12.272 ns .. 12.272 ns frequency_counter_i_SB_CARRY_I1_9_CO
+    12.550 ns .. 13.212 ns frequency_counter_i_SB_CARRY_I1_8_CO
+                  lcout -> color_select[2]
+
+Total number of logic levels: 27
+Total path delay: 13.79 ns (72.49 MHz)
+
