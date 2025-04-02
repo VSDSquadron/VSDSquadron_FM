@@ -11,8 +11,8 @@
     input wire pclk,
     output wire clk
  );
-   SB_PLL40_PAD pll (
-      .PACKAGEPIN(pclk),
+   SB_PLL40_CORE pll ( //   SB_PLL40_PAD pll (
+      .REFERENCECLK  (pclk),       // .PACKAGEPIN(pclk),
       .PLLOUTCORE(clk),
       .RESETB(1'b1),
       .BYPASS(1'b0)

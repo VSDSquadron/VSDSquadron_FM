@@ -6,7 +6,7 @@ set_io  LEDS[4] 26
 
 set_io  RESET 23
 
-set_io  CLK 35
+set_io  CLK 20
 
 set_io  TXD 4
 set_io  RXD 3
