@@ -1,179 +1,234 @@
-# Real Time Sensor Data Acquisition and Transmission System
+# **Real-Time Sensor Data Acquisition and Transmission System**
+## **1. Introduction**
 
-## **1.Introduction**
+This document compiles the entire **Real-Time Sensor Data Acquisition and Transmission System** design, including a system overview, design schematics, annotated code, testing procedures, and a short demonstration video. The goal is to measure distance using an **HC-SR04 ultrasonic sensor** on an FPGA and transmit the results via **UART** to a serial terminal.
 
-In modern embedded systems, **efficient data acquisition, processing, and control** play a crucial role in automation, industrial monitoring, and real-time decision-making. **Field-Programmable Gate Arrays (FPGAs)** offer **parallel processing capabilities, low latency, and high-speed data handling**, making them ideal for such applications.
+***
 
-This project focuses on designing an **FPGA-based data acquisition and processing system** that collects sensor data, processes it internally, and communicates the results to external devices via UART. The FPGA also controls an RGB LED system based on processed signals.
 
+## **2. System Overview**
 
-This project focuses on designing an **FPGA-based data acquisition and processing system** that collects sensor data, processes it internally, and communicates the results to external devices via UART. The FPGA also controls an RGB LED system based on processed signals.
+The system comprises:
 
-## **2.Literature Survey** 
+- **FPGA Internal Oscillator** at \~12 MHz.
 
-- [****https://www.mdpi.com/2079-9292/13/15/2950****](https://www.mdpi.com/2079-9292/13/15/2950)
+- A **clock divider** and **refresher module** to periodically trigger measurements (e.g., every 50 ms or 250 ms).
 
-- [****https://github.com/linukaratnayake/FPGA-Based-IMU-Sensor-Data-Acquisition-and-Display****](https://github.com/linukaratnayake/FPGA-Based-IMU-Sensor-Data-Acquisition-and-Display)
+- An **HC-SR04 sensor module** (`hc_sr04.v`) that generates a 10 µs trigger pulse, counts the echo duration, and calculates distance in centimeters.
 
-- [****https://citeseerx.ist.psu.edu/document?repid=rep1\&type=pdf\&doi=956a51be00c461510d9ccc5c166cac9fe1721098****](https://citeseerx.ist.psu.edu/document?repid=rep1\&type=pdf\&doi=956a51be00c461510d9ccc5c166cac9fe1721098)
+- A **UART transmitter** (`uart_tx_8n1.v`) that sends the distance reading as ASCII characters at 9600 baud.
 
-- [****https://www.mdpi.com/2076-3417/14/15/6738****](https://www.mdpi.com/2076-3417/14/15/6738)
+- **RGB LED** outputs for optional visual feedback.
 
+The top module integrates these components, latches the measured distance, converts it to ASCII, and transmits it. A **USB–Serial** adapter receives the data, which can be viewed on a PC terminal.
 
-## **3.System Overview**
+***
 
-The FPGA-based system is designed for **real-time data acquisition, processing, and control**. It captures sensor data, processes it internally, and transmits the processed data to an external device via **UART communication**. Additionally, an **RGB LED control system** provides visual feedback based on the processed signals.
 
 
- **High-Level System Flow:**
+## **3. Design Schematics**
 
- **Sensor Data Acquisition** – The system collects real-time data from **analog and digital sensors**. Analog signals are converted into digital format using an **ADC (Analog-to-Digital Converter)** before being sent to the FPGA.
+### **3.1 Circuit Diagram**
 
-**FPGA Internal Processing** – The FPGA processes the acquired sensor data using custom logic and generates output signals.
+****![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXd5xkb5gMuHSNYgQoRD_OxamARd0IUQAOl_i-2pFqskH-MfCgkCqAVZKaCm80sUEvnDQ_Axs8DmgC6NjuH-mt7uROLzRKor-2gfPz6er826Y1mfdYylWvkcJsPxds0z4VHbxxf_?key=6kJc66JRu5WFCB9blkyq0Utk)****
+### **3.2 Block Diagram**
+****![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXd3YQhi8gReP9dqfYN2P_hZpTpQ9WX7hxpKOFruj6omfOeUERVTwFJeBkqbTCt8lMyhfK2SCRqvcpJ-2Wgt-5-TVefg79lQuKLOID1_rKjf52kwsxw2MFAcIijrl7OTnb030-xa2g?key=6kJc66JRu5WFCB9blkyq0Utk)****
 
-**Data Transmission** – If processing is successful, the system transmits data to an **external device (PC, cloud, or display)** via **UART communication**.
+***
 
-**Control Mechanism** – Based on the processed data, the FPGA also controls an **RGB LED system** for status indication or feedback.
 
+## **4. Annotated Code Listings**
 
-## **4.System Requirements**
+This section briefly explains the main modules in the design. See the **src/** folder for complete Verilog files.
 
-### **. Hardware Components**
 
-- FPGA Board: VSD Squadron Mini FPGA
+### **4.1. UART Transmit Module**
 
-- Sensors: (Depends on the application)
+**File:** `uart_tx_8n1.v
+` **Key Points:**
 
-- Power Supply: USB or external source
+- **Finite State Machine** with states:
 
-- Communication Interface: UART (for transmission)
+  - **IDLE**: Wait for `senddata=1`.
 
-- External Device: PC for monitoring and debugging
+  - **START**: Output start bit (0).
 
+  - **DATA BITS**: Shift out 8 bits, LSB first.
 
-#### **Software Tools**
+  - **STOP**: Output stop bit (1). Return to IDLE.
 
-##### **Development & Simulation**
+- **Baud Rate**: The module expects a 9600 Hz clock to step the FSM.
 
-- VS Code
 
-- Icarus Verilog
+### **4.2. Ultrasonic Sensor Module (**`hc_sr04`**)**
 
-- GTKWave
+**File:** `ultra_sonic_sensor.v
+` **Key Points:**
 
+- **State Machine**: IDLE → TRIGGER → WAIT → COUNTECHO → IDLE.
 
-##### **FPGA Toolchain**
+- **TRIG** is held high for \~10 µs in the TRIGGER state.
 
-- Yosys (Logic synthesis)
+- **ECHO** is counted (distanceRAW) in the COUNTECHO state.
 
-- NextPNR (Placement & routing)
+- **distance\_cm** = `(distanceRAW * 34300) / (2 * 12000000)` ( 12 MHz Clock).
 
-- Icetime (Timing analysis)
+```verilog
 
-- Icepack (Bitstream generation)
+    // Example snippet
+    always @(posedge clk) begin
+      case (state)
+        IDLE: if (measure) state <= TRIGGER;
+        TRIGGER: if (trigcountDONE) state <= WAIT;
+        WAIT: if (echo) state <= COUNTECHO;
+        COUNTECHO: if (!echo) state <= IDLE;
+      endcase
+    end
+```
 
-- openFPGALoader (FPGA flashing)
+### **4.3. Refresher Module**
 
-- Git (Version control)
+**File:** `refresher250ms.v
+` **Key Points:**
 
-## **5.System Architecture**
+- Counts clock cycles up to a preset (e.g., 3,000,000 for 250 ms at 12 MHz).
 
-## **FPGA Internal Block Diagram**
+- Outputs a **1‐cycle pulse** (`measure`) each time it resets.
 
-****![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXeroj9fDIKl2LyLznR6cecdHEr4nAeJ77iWfLTEQk__Yw3jTPvN_XXbSgpygMGcMcvLXSgyrkZPAU3yEScgVPO5HT8He6ZSl5RPcDbuzoz4G-ptN_DNUgtApI6tPnCYgqwQsqwXMw?key=7WfJZ0NyJZ01f7p81pYMoAQl)****
+```verilog
+    always @(posedge clk) begin
+      if (counter == 3000000) begin
+        measure <= 1;
+        counter <= 0;
+      end else begin
+        measure <= 0;
+        counter <= counter + 1;
+      end
+    end
+```
 
+### **4.4. Top Module**
 
-### **Overview**
+**File:** `top.v
+` **Key Points:**
 
-This diagram illustrates the internal architecture of an FPGA, showing how different functional blocks interact to process and control data.
+- **Generates** the 9600 Hz clock from the 12 MHz oscillator.
 
+- **Instantiates** the sensor module, refresher, and UART.
 
-### **Block Descriptions**
+- **Latches** `distance_cm` and converts it to ASCII digits via a small state machine.
 
-1. **Clock Generator**
+- **Transmits** the ASCII string over UART.
 
-   - Generates the system clock required for synchronization of all FPGA operations.
+```verilog
+    // Pseudocode snippet
+    always @(posedge clk_9600) begin
+      case (state)
+        IDLE: if (sensor_ready) distance_reg <= distance_cm; ...
+        DIGIT_4: tx_data <= ((distance_reg/10000)%10) + '0'; ...
+        ...
+      endcase
+    end
+```
 
-2. **Internal Oscillator**
+***
 
-   - Maintains a stable clock signal and ensures proper timing for internal processes.
 
-3. **Data Processing Block**
+## **5. Testing Procedures**
 
-   - Responsible for receiving, interpreting, and processing sensor or system data.
+### **5.1. Simulation**
 
-4. **UART Controller**
+1. **Testbench** (`ultra_sonic_sensor_tb.v`):
 
-   - Handles serial communication by transmitting processed data to external devices.
+   - Provides a simulated `measure` pulse and a dummy echo signal.
 
-5. **RGB LED Control**
+2. **Waveforms**:
 
-   - Controls the RGB LED indicators based on processed control signals from the FPGA.
+   - Dump waveforms to `wave.vcd`.
 
+   - Verify the correct time in COUNTECHO corresponds to the final `distance_cm` output.
 
-### **Signal Flow**
 
-- **Clock Signal**: Propagates from the Clock Generator to the Internal Oscillator, ensuring synchronized operations.
+### **5.2. Hardware Testing**
 
-- **Processed Data**: Sent from the Data Processing Block to the UART Controller for external communication.
+1. **Wiring**:
 
-- **Control Signal**: Directs the RGB LED Control block, enabling appropriate LED status indications.
+   - TRIG → HC-SR04 TRIG, ECHO → HC-SR04 ECHO.
 
+   - 5 V to sensor VCC, common GND.
 
-## **FPGA based Sensor data acquisition System**
+   - FPGA’s UARTTX → USB–Serial RX.
 
-****![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXdSu-30CrrmTcJZ8O_gq2zciqDuQvwcqZSHI_aTAK2HFit-OQbkXowC8cce5Ncb15lhTR4Ivamyo5xOjemWViVdWZe1aWFiTwsx_LXf2NRBVlI8Z465EDwFRUrx67giFCqI7cjVtA?key=7WfJZ0NyJZ01f7p81pYMoAQl)****
+2. **Serial Terminal**:
 
+   - 9600 baud, 8 data bits, no parity, 1 stop bit.
 
-### **Overview**
+3. **Measuring Distance**:
 
-This diagram depicts the flow of sensor data from acquisition to final transmission, highlighting the role of FPGA in data conversion and processing.
+   - Place an object \~10 cm away from the sensor.
 
+   - Terminal should display a reading around “00010” .
 
-### **Process Flow**
+   - Move the object closer or farther to see changing values.
 
-1. **Sensor Data Acquisition**
+***
 
-   - Captures environmental data using sensors.
 
-2. **Analog Sensor Check**
 
-   - If the sensor provides analog data, it is sent to an ADC (Analog-to-Digital Converter) for conversion.
 
-   - If the data is already digital, it bypasses ADC and is directly transmitted to the FPGA.
 
-3. **Digital Data to FPGA**
+## **7. Synthesis & Programming**
 
-   - The FPGA receives the digital data for further processing.
+### **7.1. Cloning & Building**
 
-4. **FPGA Internal Processing**
+```bash
 
-   - The FPGA analyzes and processes the incoming data.
 
-5. **Processed Data Check**
+    git clone https://github.com/VSDSquadron/VSDSquadron_FM
+    cd "Real-Time-Sensor-Data-Acquisition-and-Transmission-System"
+```
+clones a GitHub repository for a real-time sensor data system and then enters its directory
+```bash
+   make build
+```
+This runs Yosys, nextpnr, and icepack (or your FPGA toolchain) to produce the final bitstream (e.g., `top.bin`).
 
-   - If data is not yet processed, it is sent back for further computation.
 
-   - If the data is processed, it proceeds to transmission.
+### **7.2. Flashing the FPGA**
 
-6. **Data Transmission (UART)**
+```tcl
 
-   - The processed data is transmitted via the UART (Universal Asynchronous Receiver-Transmitter) interface.
+    sudo make flash
+````
+This uploads `top.bin` to the FPGA board using `iceprog` or a similar programmer.
 
-7. **External Device Communication**
 
-   - The transmitted data is received by an external system such as a PC, cloud server, or display unit for further analysis and visualization.
+### **7.3. Running the Terminal**
 
+```bash
 
 
-## **6.Milestones & Development Roadmap**
+    sudo make terminal
+```
+Opens a screen or minicom session at 9600 baud. Watch the distance measurements stream in as ASCII text.
 
-|          |                                                                |                                                                                                                                                                                     |
-| -------- | -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Date     | Task                                                           | Details                                                                                                                                                                             |
-| March 8  | UART Implementation (Verilog)                                  | Develop **UART RX/TX module (uart\_trx.v)** Implement Baud Rate Generator (9600 Hz)Simulate UART communication using testbench                                                       |
-| March 9  | Sensor Data Acquisition & ADC Integration                      |  Develop **ADC Interface Module** Simulate ADC behavior in **testbench (ModelSim/ISE)**Debug & adjust timing constraints                                                            |
-| March 10 | Top module development(top.v)                                  |  Define **top-level module (top.v)** Integrate **UART, internal clock, LED outputs** Map signals to FPGA pins                                                                         |
-| March 11 | Clock & Oscillator Implementation                              | Implement **Internal Oscillator (SB\_HFOSC)** Design **Clock Divider (1MHz from 50MHz)** Verify output clock stability                                                               |
-| March 12 | FPGA Data Processing & RGB LED Control                         |  Implement **data processing logic** Connect **RGB LED driver (SB\_RGBA\_DRV)** Verify PWM LED control using **UART RX signals**                                                     |
-| March 13 | Makefile Creation, Pin Constraints & Final Hardware Validation | Creating Makefile & PCF FileFor pin mapping and uploading the code to **FPGA** Upload bitstream to **VSD Squadron Mini FPGA.** Verify **UART communication** using a serial monitor. |
+***
+
+
+## **8. Conclusion**
+
+We have demonstrated a complete **Real-Time Sensor Data Acquisition and Transmission System** on an FPGA:
+
+- The **HC-SR04** ultrasonic sensor is triggered at regular intervals.
+
+- The FPGA counts echo pulses and calculates distance in centimeters.
+
+- The **UART transmitter** sends the measurements at 9600 baud to a PC.
+
+- Optional RGB LEDs provide local visual feedback.
+
+This design can be extended to other sensors or improved by adding more robust error handling, or by supporting different baud rates or clock speeds.
+
+***
+
+
