@@ -21,6 +21,12 @@
    defparam pll.PLLOUT_SELECT="GENCLK";
    generate
      case(freq)
+      12: begin
+      defparam pll.DIVR         = 4'b0000;
+      defparam pll.DIVF         = 7'b0000000;
+      defparam pll.DIVQ         = 3'b000;
+      defparam pll.FILTER_RANGE = 3'b001;
+      end
      16: begin
       defparam pll.DIVR = 4'b0000;
       defparam pll.DIVF = 7'b1010100;

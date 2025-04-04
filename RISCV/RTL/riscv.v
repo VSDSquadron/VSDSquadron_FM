@@ -311,7 +311,7 @@ endmodule
 
 
 module SOC (
-    input 	     CLK,  // system clock 
+   //  input 	     CLK,  // system clock 
     input 	     RESET,// reset button
     output reg [4:0] LEDS, // system LEDs
     input 	     RXD,  // UART receive
@@ -369,8 +369,8 @@ module SOC (
    wire uart_ready;
    
    corescore_emitter_uart #(
-      .clk_freq_hz(`CPU_FREQ*1000000),
-     .baud_rate(115200)
+      .clk_freq_hz(12*1000000),
+      .baud_rate(9600)
       //   .baud_rate(1000000)
    ) UART(
       .i_clk(clk),
@@ -398,9 +398,21 @@ module SOC (
    end
 `endif   
    
+   wire clk_int;
+
+   SB_HFOSC #(
+   .CLKHF_DIV("0b10") // 12 MHz
+   ) hfosc (
+      .CLKHFPU(1'b1),
+      .CLKHFEN(1'b1),
+      .CLKHF(clk_int)
+   );
+
+
+
    // Gearbox and reset circuitry.
    Clockworks CW(
-     .CLK(CLK),
+     .CLK(clk_int),
      .RESET(RESET),
      .clk(clk),
      .resetn(resetn)
